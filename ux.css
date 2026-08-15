@@ -1,0 +1,55 @@
+/* UX polish layer: behavior only, keeps approved visual composition */
+:root{--ux-ease:cubic-bezier(.22,.61,.36,1);--ux-fast:180ms;--ux-med:320ms}
+html{scroll-padding-top:86px}
+.topbar{position:sticky;top:0;z-index:120;transition:box-shadow var(--ux-fast) ease,background-color var(--ux-fast) ease}
+.topbar.is-scrolled{box-shadow:0 10px 28px rgba(0,0,0,.14)}
+.topbar nav a{position:relative;padding:25px 0 22px;transition:color var(--ux-fast) ease}
+.topbar nav a:after{content:"";position:absolute;left:0;right:0;bottom:15px;height:2px;background:#7a2026;transform:scaleX(0);transform-origin:center;transition:transform var(--ux-fast) var(--ux-ease)}
+.topbar nav a:hover,.topbar nav a[aria-current="true"]{color:#7a2026}
+.topbar nav a[aria-current="true"]:after,.topbar nav a:hover:after{transform:scaleX(1)}
+.nav-cta,.goldBtn,.ghostBtn,.outlineBtn,.businessTags button,.floorTabs button,.floorCards button,.viewAll,.lead button,.modalTabs button,.modalPanel header button{transition:transform var(--ux-fast) var(--ux-ease),box-shadow var(--ux-fast) ease,filter var(--ux-fast) ease,background-color var(--ux-fast) ease,color var(--ux-fast) ease,border-color var(--ux-fast) ease}
+.nav-cta:hover,.goldBtn:hover,.lead button:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.ghostBtn:hover,.outlineBtn:hover,.businessTags button:hover,.viewAll:hover,.modalTabs button:hover{transform:translateY(-1px)}
+.productCards article,.floorCards button,.modalGrid article{transition:transform var(--ux-med) var(--ux-ease),box-shadow var(--ux-med) ease,border-color var(--ux-fast) ease}
+.productCards article:hover,.floorCards button:hover,.modalGrid article:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(39,29,17,.13);border-color:#c6a878}
+.productCards img,.gallery img{transition:transform 600ms var(--ux-ease),filter 300ms ease}
+.productCards article:hover img,.gallery img:hover{transform:scale(1.025);filter:saturate(1.04) contrast(1.02)}
+.gallery{overflow:hidden}.gallery img{will-change:transform}
+.heroActions a,.nav-cta,.outlineBtn,.phone,.topbar nav a,.viewAll,.businessTags button,.floorTabs button,.floorCards button,.modalTabs button,.modalPanel header button{touch-action:manipulation}
+.hero,.intro,.values,.products,.shop,.penthouse,.floor,.gallery,.lead,footer{scroll-margin-top:86px}
+
+/* Keep below-fold rendering light without altering reserved dimensions */
+.products,.shop,.penthouse,.floor,.gallery,.lead,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
+
+/* Modal transition + focus treatment */
+.modal{display:block!important;visibility:hidden;opacity:0;pointer-events:none;transition:opacity 220ms ease,visibility 0s linear 220ms}
+.modal.open{visibility:visible;opacity:1;pointer-events:auto;transition:opacity 220ms ease}
+.modalBackdrop{opacity:0;transition:opacity 240ms ease}.modal.open .modalBackdrop{opacity:1}
+.modalPanel{transform:translateY(18px) scale(.992);opacity:0;transition:transform 280ms var(--ux-ease),opacity 220ms ease}
+.modal.open .modalPanel{transform:none;opacity:1}
+.modalPanel header{box-shadow:0 1px 0 rgba(255,255,255,.04)}
+
+/* Keyboard UX */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(199,160,99,.88);outline-offset:3px}
+input:focus,select:focus{box-shadow:0 0 0 3px rgba(199,160,99,.15)}
+.lead input,.lead select{transition:box-shadow var(--ux-fast),border-color var(--ux-fast)}
+.lead .is-invalid{box-shadow:0 0 0 2px rgba(255,132,132,.72);background:#fff6f6}
+
+/* Image error never leaves an ugly empty block */
+img.image-failed{background:linear-gradient(135deg,#e8e0d4,#f5efe6);object-fit:contain;min-height:140px}
+.image-fallback{position:relative;background:linear-gradient(135deg,#e9e1d5,#f5f0e8)!important}
+.image-fallback:after{content:"Hình ảnh dự án";position:absolute;inset:0;display:grid;place-items:center;color:#8d7a60;font:600 12px Arial,Helvetica,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+
+/* Discreet section reveal; content remains visible if JS is unavailable */
+.ux-reveal{opacity:0;transform:translateY(14px);transition:opacity 520ms var(--ux-ease),transform 520ms var(--ux-ease)}
+.ux-reveal.is-visible{opacity:1;transform:none}
+
+@media(max-width:650px){
+  html{scroll-padding-top:68px}.topbar{position:sticky}.nav-cta{min-height:40px}.businessTags button,.floorTabs button,.viewAll,.modalTabs button{min-height:40px}.modalPanel{overscroll-behavior:contain}.modalGrid article:hover,.productCards article:hover,.floorCards button:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .ux-reveal{opacity:1!important;transform:none!important}
+  .productCards article:hover,.floorCards button:hover,.modalGrid article:hover,.nav-cta:hover,.goldBtn:hover,.lead button:hover{transform:none!important}
+}
