@@ -1,33 +1,32 @@
-const modal=document.getElementById('sourceModal');
-const planTabs=document.getElementById('planTabs');
-const sourceGrid=document.getElementById('sourceGrid');
-const business=document.getElementById('singleBusiness');
-const interior=document.getElementById('singleInterior');
-const gallery=document.getElementById('singleGallery');
-const title=document.getElementById('modalTitle');
-function resetViews(){sourceGrid.hidden=false;planTabs.hidden=false;business.hidden=true;interior.hidden=true;gallery.hidden=true;}
-function openModal(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
-function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
-function filterPlans(kind='all'){
-  resetViews(); title.textContent='MẶT BẰNG & BỘ SƯU TẬP SẢN PHẨM';
-  planTabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.filter===kind));
-  sourceGrid.querySelectorAll('.source-card').forEach(card=>{
-    const visible=kind==='all'||card.dataset.kind===kind;
-    card.classList.toggle('hidden',!visible);
-  });
-  openModal();
+const modal=document.getElementById('plansModal');
+const toast=document.getElementById('toast');
+function openModal(kind='all'){
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+  document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===kind));
+  document.querySelectorAll('.modalGrid article').forEach(card=>card.classList.toggle('hidden',kind!=='all'&&card.dataset.kind!==kind));
 }
-document.querySelectorAll('[data-open-plan]').forEach(btn=>btn.addEventListener('click',()=>filterPlans(btn.dataset.openPlan)));
-planTabs.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>filterPlans(btn.dataset.filter)));
-document.querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>{
-  const view=btn.dataset.open; resetViews();
-  if(view==='business'){sourceGrid.hidden=true;planTabs.hidden=true;business.hidden=false;title.textContent='CÁC LOẠI HÌNH KINH DOANH';}
-  if(view==='interior'){sourceGrid.hidden=true;planTabs.hidden=true;interior.hidden=false;title.textContent='HÌNH ẢNH PENTHOUSE';}
-  if(view==='gallery'){sourceGrid.hidden=true;planTabs.hidden=true;gallery.hidden=false;title.textContent='THƯ VIỆN HÌNH ẢNH THEO PDF';}
-  openModal();
-}));
+function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+document.getElementById('openAllPlans').addEventListener('click',()=>openModal('all'));
+document.querySelectorAll('[data-plan]').forEach(btn=>btn.addEventListener('click',()=>openModal(btn.dataset.plan)));
+document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>openModal(btn.dataset.filter)));
 document.querySelectorAll('[data-close]').forEach(el=>el.addEventListener('click',closeModal));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-const toast=document.getElementById('toast');
-function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>toast.classList.remove('show'),3200)}
-document.getElementById('leadForm').addEventListener('submit',e=>{e.preventDefault();showToast('Bản Ladi demo: form chưa kết nối backend, không gửi dữ liệu ra ngoài.');});
+
+document.querySelectorAll('[data-business]').forEach(btn=>btn.addEventListener('click',()=>{
+  openModal('spana');
+  showToast('Nhóm kinh doanh bám tài liệu PDF; không thêm dữ liệu ngoài nguồn.');
+}));
+
+const floorMap={
+ spana:{label:'SPANA TOWER',area:'SHOP KHỐI ĐẾ',text:'Mặt bằng được mở ở bộ sưu tập theo nguồn tài liệu.',bg:"url('https://datnenhoaxuan.com/uploads/images/S1%20T%E1%BA%A7ng%201-A0%281%29.jpg')"},
+ cora:{label:'CORA TOWER',area:'LAYOUT',text:'Layout Cora tham chiếu bộ tài liệu và hình nguồn độ phân giải cao.',bg:"url('https://diaocmientrung.vn/wp-content/uploads/2025/10/mat-bang-sun-cora-tower-da-nang.jpg')"},
+ slight:{label:'S-LIGHT TOWER',area:'MẶT BẰNG',text:'Mặt bằng S-Light hiển thị từ nguồn hình độ phân giải cao.',bg:"url('https://static1.cafeland.vn/cafelandnew/hinh-anh/2026/06/23/215/image-20260623094549-2.png?t=1')"}
+};
+document.querySelectorAll('[data-floor]').forEach(btn=>btn.addEventListener('click',()=>{
+  const d=floorMap[btn.dataset.floor];if(!d)return;
+  document.querySelectorAll('[data-floor]').forEach(b=>b.classList.toggle('active',b===btn));
+  const image=document.getElementById('featuredPlan');image.style.backgroundImage=d.bg;image.style.backgroundSize='contain';image.style.backgroundRepeat='no-repeat';image.style.backgroundPosition='center';
+  document.getElementById('planLabel').textContent=d.label;document.getElementById('planArea').textContent=d.area;document.getElementById('planText').textContent=d.text;
+}));
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>toast.classList.remove('show'),2800)}
+document.getElementById('leadForm').addEventListener('submit',e=>{e.preventDefault();showToast('Bản preview: form chưa kết nối backend nên chưa gửi dữ liệu.');});
