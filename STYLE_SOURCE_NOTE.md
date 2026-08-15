@@ -1,0 +1,1 @@
+`style-base.css` is pinned to the original approved V4 stylesheet blob from commit `84e089dbdf7dd48a62207add6ec82f06c3c9dc21`. `fix.css` contains only targeted corrections requested after visual approval.
