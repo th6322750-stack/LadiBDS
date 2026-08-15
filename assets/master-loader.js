@@ -5,6 +5,8 @@
     if(fallback) fallback.hidden=false;
     return;
   }
+  var masterUrl='data:image/webp;base64,'+window.__MASTER;
+  document.documentElement.style.setProperty('--master-url','url("'+masterUrl+'")');
   img.onload=function(){
     document.documentElement.classList.add('master-ready');
     if(fallback) fallback.hidden=true;
@@ -12,5 +14,5 @@
   img.onerror=function(){
     if(fallback) fallback.hidden=false;
   };
-  img.src='data:image/webp;base64,'+window.__MASTER;
+  img.src=masterUrl;
 })();
