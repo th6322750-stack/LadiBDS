@@ -1,0 +1,1 @@
+Temporary recovery marker while replacing corrupt master preview asset with a valid local WebP generated from the approved 728×2048 Visual Master.
