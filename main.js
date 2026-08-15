@@ -1,1 +1,54 @@
-const floorData={cora:{cls:'f27',tag:'CORA TOWER',title:'LAYOUT KHỐI ĐẾ',text:'Mặt bằng tầng 1 tòa A1 và A2 theo tài liệu PDF trang 27.'},slight:{cls:'f39',tag:'S-LIGHT TOWER',title:'MẶT BẰNG TẦNG 22',text:'Mặt bằng tầng 22 của hai tòa SL1 và SL2 theo PDF trang 39.'},duplex:{cls:'f40',tag:'S-LIGHT TOWER',title:'GỢI Ý LAYOUT DUPLEX',text:'Hai phương án layout Duplex được trình bày trực tiếp tại PDF trang 40.'},penthouse:{cls:'f42',tag:'PENTHOUSE',title:'LAYOUT PENTHOUSE GỢI Ý',text:'Tầng 01 95m² và tầng 02 74m²; tài liệu nêu gia tăng 78% diện tích.'}};function selectFloor(key){const d=floorData[key];if(!d)return;const main=document.getElementById('floorMain');main.className='pdf-floor '+d.cls;document.getElementById('floorTag').textContent=d.tag;document.getElementById('floorTitle').textContent=d.title;document.getElementById('floorText').textContent=d.text;document.querySelectorAll('[data-floor]').forEach(b=>b.classList.toggle('active',b.dataset.floor===key))}document.querySelectorAll('[data-floor]').forEach(b=>b.addEventListener('click',()=>selectFloor(b.dataset.floor)));const modal=document.getElementById('plansModal');function openModal(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}document.getElementById('openAllPlans').addEventListener('click',openModal);document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',closeModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});document.querySelectorAll('[data-modal-filter]').forEach(btn=>btn.addEventListener('click',()=>{const filter=btn.dataset.modalFilter;document.querySelectorAll('[data-modal-filter]').forEach(b=>b.classList.toggle('active',b===btn));document.querySelectorAll('.modal-grid article').forEach(card=>card.classList.toggle('hidden',filter!=='all'&&card.dataset.kind!==filter))}));const business={education:['GIÁO DỤC & PHÁT TRIỂN TRẺ EM','Trung tâm tiếng Anh, nhà trẻ, trung tâm năng khiếu…'],fnb:['F&B','Nhà hàng, quán cà phê, bakery, trà sữa, buffet, quán gia đình, đồ ăn healthy, fastfood, thực phẩm sạch…'],health:['CHĂM SÓC SỨC KHỎE & LÀM ĐẸP','Phòng khám đa khoa, nha khoa, phòng khám nhi, nhà thuốc, spa, massage trị liệu, salon tóc, nail, gym, yoga, pilates…'],retail:['BÁN LẺ & TIÊU DÙNG THIẾT YẾU','Siêu thị mini, cửa hàng tiện lợi, thực phẩm sạch, hoa quả nhập khẩu, mẹ & bé, điện máy mini, nội thất, thời trang…'],services:['DỊCH VỤ PHỤC VỤ CƯ DÂN','Ngân hàng, ATM, chuyển phát nhanh, giặt là, dịch vụ vệ sinh, coworking space…'],entertainment:['GIẢI TRÍ','Cửa hàng quà tặng, photo booth, thư viện, đồ thể thao…']};const note=document.getElementById('businessNote');document.querySelectorAll('[data-business]').forEach(btn=>btn.addEventListener('click',()=>{const[t,x]=business[btn.dataset.business];document.getElementById('businessTitle').textContent=t;document.getElementById('businessText').textContent=x;note.hidden=false;note.scrollIntoView({behavior:'smooth',block:'nearest'})}));document.querySelector('.close-note').addEventListener('click',()=>note.hidden=true);
+(() => {
+  const viewAll = document.querySelector('.viewall');
+  if (!viewAll) return;
+
+  const modal = document.createElement('div');
+  modal.className = 'fp-modal';
+  modal.setAttribute('aria-hidden','true');
+  modal.innerHTML = `
+    <div class="fp-backdrop" data-close></div>
+    <div class="fp-panel" role="dialog" aria-modal="true" aria-label="Tất cả mặt bằng theo PDF">
+      <div class="fp-head"><h3>MẶT BẰNG & BỘ SƯU TẬP SẢN PHẨM</h3><button class="fp-close" type="button" data-close aria-label="Đóng">×</button></div>
+      <div class="fp-tabs">
+        <button class="active" data-filter="all">TẤT CẢ</button>
+        <button data-filter="cora">CORA</button>
+        <button data-filter="slight">S-LIGHT</button>
+        <button data-filter="duplex">DUPLEX</button>
+        <button data-filter="penthouse">PENTHOUSE</button>
+      </div>
+      <div class="fp-grid">
+        <article class="fp-card" data-type="cora"><div class="fp-img"></div><h4>CORA TOWER · LAYOUT KHỐI ĐẾ</h4><p>Mặt bằng tầng 1 tòa A1 và A2 — PDF trang 27.</p></article>
+        <article class="fp-card" data-type="slight"><div class="fp-img"></div><h4>S-LIGHT TOWER · MẶT BẰNG TẦNG 22</h4><p>Mặt bằng hai tòa SL1 và SL2 — PDF trang 39.</p></article>
+        <article class="fp-card" data-type="duplex"><div class="fp-img"></div><h4>GỢI Ý LAYOUT DUPLEX</h4><p>Hai phương án layout Duplex — PDF trang 40.</p></article>
+        <article class="fp-card" data-type="penthouse"><div class="fp-img"></div><h4>PENTHOUSE · TẦNG 01 95m² / TẦNG 02 74m²</h4><p>Layout Penthouse gợi ý, gia tăng 78% diện tích — PDF trang 42.</p></article>
+        <article class="fp-card" data-type="penthouse2"><div class="fp-img"></div><h4>PENTHOUSE · BỘ SƯU TẬP DIỆN TÍCH</h4><p>74m² / 55m² / 66m² / 60m² và các phương án 100% — PDF trang 43.</p></article>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+
+  const open = () => {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  };
+  const close = () => {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  };
+  viewAll.addEventListener('click', open);
+  viewAll.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', close));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+  modal.querySelectorAll('[data-filter]').forEach(btn => btn.addEventListener('click', () => {
+    const filter = btn.dataset.filter;
+    modal.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b === btn));
+    modal.querySelectorAll('.fp-card').forEach(card => {
+      const t = card.dataset.type;
+      card.style.display = filter === 'all' || t === filter || (filter === 'penthouse' && t === 'penthouse2') ? '' : 'none';
+    });
+  }));
+
+  document.querySelectorAll('.cta').forEach(btn => btn.addEventListener('click', () => document.querySelector('#contact')?.scrollIntoView({behavior:'smooth'})));
+})();
