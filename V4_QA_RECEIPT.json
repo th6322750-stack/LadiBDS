@@ -1,0 +1,7 @@
+{
+  "artifact": "Sun Galaxy Complex V4 Visual Master",
+  "canonicalViewport": {"width": 728, "height": 2048, "deviceScaleFactor": 1},
+  "goldenReference": "v4-canonical-render.png",
+  "visualLock": {"status": "PASS", "changedPixels": 0, "changedPercent": 0.0, "mae": 0.0, "rmse": 0.0, "maxChannelDelta": 0},
+  "note": "The zero-diff receipt applies to the golden visual-lock artifact. The live DOM preview in index.html is the reconstruction workspace and must be visually refined against that golden reference before final implementation acceptance."
+}
